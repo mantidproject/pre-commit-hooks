@@ -1,30 +1,32 @@
 #!/bin/bash
-# Compiles a statically-linked clang-format exe for 64-bit linux
+# Compiles a statically-linked clang-format exe for 64-bit macOS
 set -ex
 
 # functions
 function download_and_extract_xz {
   _url=$1
-  wget --quiet ${_url}
-  tar --extract --xz --strip-components=1 --file $(basename ${_url})
+  _filename=$(basename ${_url})
+  curl -L ${_url} --output ${_filename}
+  tar --extract --xz --strip-components=1 --file=${_filename}
 }
 
 # tarballs
-LLVM_SRC_TXZ=https://github.com/llvm/llvm-project/releases/download/llvmorg-9.0.1/llvm-9.0.1.src.tar.xz
-CLANG_SRC_TGZ=https://github.com/llvm/llvm-project/releases/download/llvmorg-9.0.1/clang-9.0.1.src.tar.xz
+LLVM_SRC_TXZ=https://github.com/llvm/llvm-project/releases/download/llvmorg-11.1.0/llvm-11.1.0.src.tar.xz
+CLANG_SRC_TGZ=https://github.com/llvm/llvm-project/releases/download/llvmorg-11.1.0/clang-11.1.0.src.tar.xz
 
 # extract source
+rm -fr llvm
+rm -fr llvm-build
 mkdir -p llvm/tools/clang
 mkdir llvm-build
 pushd llvm
 download_and_extract_xz ${LLVM_SRC_TXZ}
 cd tools/clang
 download_and_extract_xz ${CLANG_SRC_TGZ}
-# patch CMakeLists.txt to statically link to libgcc and libstdc++ to clang-format exe
-sed -i -e 's@${CLANG_FORMAT_LIB_DEPS}@${CLANG_FORMAT_LIB_DEPS} -static-libgcc -static-libstdc++@' tools/clang-format/CMakeLists.txt
 popd
 
 # build
+brew install ninja
 cd llvm-build
 CC=clang CXX=clang++ cmake \
   -G Ninja \
@@ -38,3 +40,7 @@ CC=clang CXX=clang++ cmake \
   ../llvm/
 cmake --build . --target clang-format
 strip bin/clang-format
+mv -f bin/clang-format ../clang-format/bin/clang-format-darwin
+cd ..
+rm -fr llvm-build
+rm -fr llvm

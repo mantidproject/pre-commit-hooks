@@ -1,0 +1,68 @@
+name: Update Pre-Commit
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  update-linux:
+    name: Update Linux
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'Add executable for')"
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Update clang format
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install moby-engine moby-cli containerd.io -y
+          cd clang-format/build/linux
+          ./build-docker-linux.sh
+
+      - name: Git Auto Commit
+        uses: stefanzweifel/git-auto-commit-action@v4.9.1
+        with:
+          commit_message: Add executable for Linux
+          commit_options: '--no-verify --signoff'
+          file_pattern: "**/bin/*"
+          commit_user_name: mantid-builder
+          commit_user_email: mantid-builder@hosting.com
+
+  update-windows:
+    name: Update Windows
+    runs-on: windows-2019
+    if: "!contains(github.event.head_commit.message, 'Add executable for')"
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Update clang format
+        run: |
+          ./clang-format/build/windows/build-clang-format.bat
+
+      - name: Git Auto Commit
+        uses: stefanzweifel/git-auto-commit-action@v4.9.1
+        with:
+          commit_message: Add executable for Windows
+          commit_options: '--no-verify --signoff'
+          file_pattern: "**/bin/*.exe"
+          commit_user_name: mantid-builder
+          commit_user_email: mantid-builder@hosting.com
+
+  update-mac:
+    name: Update MacOS
+    runs-on: macos-latest
+    if: "!contains(github.event.head_commit.message, 'Add executable for')"
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Update clang format
+        run: |
+          ./clang-format/build/mac/build-clang-format-mac.sh
+
+      - name: Git Auto Commit
+        uses: stefanzweifel/git-auto-commit-action@v4.9.1
+        with:
+          commit_message: Add executable for MacOS
+          commit_options: '--no-verify --signoff'
+          file_pattern: "**/bin/*"
+          commit_user_name: mantid-builder
+          commit_user_email: mantid-builder@hosting.com
