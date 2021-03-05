@@ -2,13 +2,13 @@
 :: build statically linked executable
 
 :: enable VC environment. activates cmake, ninja
-call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64
+call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64 || call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
 :: assume 7z is installed in standard path
 set PATH=C:\Program Files\7-Zip;%PATH%
 set SCRIPTDIR=%~dp0
-set LLVM_RELEASES_URL=https://github.com/llvm/llvm-project/releases/download/llvmorg-9.0.1
-set LLVM_TGZ=llvm-9.0.1.src.tar.xz
-set CLANG_TGZ=clang-9.0.1.src.tar.xz
+set LLVM_RELEASES_URL=https://github.com/llvm/llvm-project/releases/download/llvmorg-11.1.0/
+set LLVM_TGZ=llvm-11.1.0.src.tar.xz
+set CLANG_TGZ=clang-11.1.0.src.tar.xz
 
 :: sources
 del /Q %LLVM_TGZ%
@@ -23,13 +23,19 @@ curl -L %LLVM_RELEASES_URL%/%CLANG_TGZ% -o %CLANG_TGZ%
 call:extract-tgz %CLANG_TGZ%
 move %CLANG_TGZ:~0,-7% clang
 
+:: Choose python directory
+if exist "C:\Program Files\Python38\python.exe" (
+  set PYTHONEXE="C:\Program Files\Python38\python.exe"
+) else (
+  set PYTHONEXE="C:\Program Files\Python37\python.exe"
+)
+
 :: build
 cd ..\..\llvm-build
 set CC=cl
 set CXX=cl
 cmake ^
-  -G Ninja ^
-  -DCMAKE_BUILD_TYPE=Release ^
+  -G "Visual Studio 16 2019" ^
   -DLLVM_USE_CRT_RELEASE=MT ^
   -DLLVM_ENABLE_ASSERTIONS=OFF ^
   -DLLVM_ENABLE_THREADS=OFF ^
@@ -37,10 +43,10 @@ cmake ^
   -DLIBCLANG_BUILD_STATIC=ON ^
   -DCLANG_ENABLE_STATIC_ANALYZER=OFF ^
   -DCLANG_ENABLE_ARCMT=OFF ^
-  -DPYTHON_EXECUTABLE="C:\Program Files\Python38\python.exe" ^
+  -DPYTHON_EXECUTABLE=%PYTHONEXE% ^
   ../llvm/
-ninja clang-format
-copy /Y bin\clang-format.exe %SCRIPTDIR%..\..\bin
+cmake --build . --target clang-format --config Release
+copy /Y Release\bin\clang-format.exe %SCRIPTDIR%..\..\bin
 
 goto:eof
 
