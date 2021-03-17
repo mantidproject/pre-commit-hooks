@@ -4,3 +4,10 @@
     entry: ./clang-format/bin/clang-format-hook
     language: script
     files: \.(c|cc|cxx|cpp|h|tcc)$
+
+-   id: cppcheck
+    name: cppcheck
+    description: Ensure files are cppcheck compliant
+    entry: ./cppcheck/bin/cppcheck-hook
+    language: script
+    files: \.(c|cc|cxx|cpp|h|tcc)
