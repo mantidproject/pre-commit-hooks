@@ -15,8 +15,11 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt-get install moby-engine moby-cli containerd.io -y
-          cd clang-format/build/linux
-          ./build-docker-linux.sh
+          ./clang-format/build/linux/build-docker-linux.sh
+
+      - name: Update cppcheck
+        run: |
+          ./cppcheck/build/linux/build-cppcheck-linux.sh
 
       - name: Git Auto Commit
         uses: stefanzweifel/git-auto-commit-action@v4.9.1
@@ -38,6 +41,10 @@ jobs:
         run: |
           ./clang-format/build/windows/build-clang-format.bat
 
+      - name: Update cppcheck
+        run: |
+          ./cppcheck/build/windows/build-cppcheck.bat
+
       - name: Git Auto Commit
         uses: stefanzweifel/git-auto-commit-action@v4.9.1
         with:
@@ -57,6 +64,10 @@ jobs:
       - name: Update clang format
         run: |
           ./clang-format/build/mac/build-clang-format-mac.sh
+
+      - name: Update cppcheck
+        run: |
+          ./cppcheck/build/windows/build-cppcheck-mac.sh
 
       - name: Git Auto Commit
         uses: stefanzweifel/git-auto-commit-action@v4.9.1
