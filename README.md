@@ -1,6 +1,7 @@
 # Custom pre-commit hooks for the pre-commit framework
 The hooks present in this repository are:
 * clang-format (self-contained hook not reliant on clang-format being available externally)
+* Cppcheck (self-contained hook not reliant on cppcheck being available externally)
 
 To use the hooks copy this to your .pre-commit-config.yaml:
 ```yaml
@@ -8,4 +9,5 @@ To use the hooks copy this to your .pre-commit-config.yaml:
     rev: main
     hooks:
     -   id: clang-format
+    -   id: cppcheck
 ```
