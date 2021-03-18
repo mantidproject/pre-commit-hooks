@@ -27,7 +27,6 @@ if exist "C:\Program Files\Python38\python.exe" (
 mkdir cppcheck-build
 cd cppcheck-build
 cmake ^
-    -DCMAKE_BUILD_TYPE=Release ^
     -DBUILD_GUI=OFF ^
     -DHAVE_RULES=OFF ^
     -DUSE_MATCHCOMPILER=ON ^
