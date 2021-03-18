@@ -32,12 +32,12 @@ cmake ^
     -DUSE_MATCHCOMPILER=ON ^
   ../cppcheck/cppcheck-2.3
 cmake --build . --config Release
-copy /Y Release/bin/cppcheck ../../../bin/cppcheck.exe
+copy /Y bin/Release/cppcheck.exe ../../../bin/cppcheck.exe
 
 :: cleanup
 cd ..
-del cppcheck
-del cppcheck-build
+rmdir /S /Q cppcheck
+rmdir /S /Q cppcheck-build
 
 goto:eof
 
