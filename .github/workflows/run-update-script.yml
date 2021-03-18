@@ -20,7 +20,8 @@ jobs:
 
       - name: Update cppcheck
         run: |
-          ./cppcheck/build/linux/build-cppcheck-linux.sh
+          cd cppcheck/build/linux
+          ./build-cppcheck-linux.sh
 
       - name: Git Auto Commit
         uses: stefanzweifel/git-auto-commit-action@v4.9.1
@@ -44,7 +45,8 @@ jobs:
 
       - name: Update cppcheck
         run: |
-          ./cppcheck/build/windows/build-cppcheck.bat
+          cd cppcheck/build/windows
+          ./build-cppcheck.bat
 
       - name: Git Auto Commit
         uses: stefanzweifel/git-auto-commit-action@v4.9.1
@@ -68,7 +70,8 @@ jobs:
 
       - name: Update cppcheck
         run: |
-          ./cppcheck/build/windows/build-cppcheck-mac.sh
+          cd cppcheck/build/mac
+          ./build-cppcheck-mac.sh
 
       - name: Git Auto Commit
         uses: stefanzweifel/git-auto-commit-action@v4.9.1
