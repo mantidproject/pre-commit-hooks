@@ -15,7 +15,8 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt-get install moby-engine moby-cli containerd.io -y
-          ./clang-format/build/linux/build-docker-linux.sh
+          cd clang-format/build/linux
+          ./build-docker-linux.sh
 
       - name: Update cppcheck
         run: |
