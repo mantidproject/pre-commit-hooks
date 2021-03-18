@@ -30,9 +30,14 @@ cmake ^
     -DBUILD_GUI=OFF ^
     -DHAVE_RULES=OFF ^
     -DUSE_MATCHCOMPILER=ON ^
-  ../cppcheck/
+  ../cppcheck/cppcheck-2.3
 cmake --build . --config Release
 copy /Y Release/bin/cppcheck ../../../bin/cppcheck.exe
+
+:: cleanup
+cd ..
+del cppcheck
+del cppcheck-build
 
 goto:eof
 
