@@ -16,13 +16,6 @@ curl -L %CPPCHECK_URL% -o %CPPCHECK_TGZ%
 call:extract-tgz %CPPCHECK_TGZ%
 cd ..
 
-:: Choose python directory
-if exist "C:\Program Files\Python38\python.exe" (
-  set PYTHONEXE="C:\Program Files\Python38\python.exe"
-) else (
-  set PYTHONEXE="C:\Program Files\Python37\python.exe"
-)
-
 :: build
 mkdir cppcheck-build
 cd cppcheck-build
@@ -32,7 +25,7 @@ cmake ^
     -DUSE_MATCHCOMPILER=ON ^
   ../cppcheck/cppcheck-2.3
 cmake --build . --config Release
-copy /Y bin/Release/cppcheck.exe ../../../bin/cppcheck.exe
+copy /Y bin\Release\cppcheck.exe ..\..\..\bin\
 
 :: cleanup
 cd ..
