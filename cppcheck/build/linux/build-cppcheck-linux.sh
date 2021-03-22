@@ -11,10 +11,11 @@ mkdir cppcheck
 cd cppcheck
 wget --quiet ${CPPCHECK}
 tar --extract --gz --strip-components=1 --file ${TAR_FILE}
-cd ..
-
+# patch CMakeLists.txt to statically link to libgcc and libstdc++ to clang-format exe
+sed -i -e 's@${CLANG_FORMAT_LIB_DEPS}@${CLANG_FORMAT_LIB_DEPS} -static-libgcc -static-libstdc++@' CMakeLists.txt
 
 # build
+cd ..
 mkdir cppcheck-build
 cd cppcheck-build
 cmake ../cppcheck \
