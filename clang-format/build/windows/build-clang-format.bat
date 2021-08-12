@@ -6,9 +6,9 @@ call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary
 :: assume 7z is installed in standard path
 set PATH=C:\Program Files\7-Zip;%PATH%
 set SCRIPTDIR=%~dp0
-set LLVM_RELEASES_URL=https://github.com/llvm/llvm-project/releases/download/llvmorg-11.1.0/
-set LLVM_TGZ=llvm-11.1.0.src.tar.xz
-set CLANG_TGZ=clang-11.1.0.src.tar.xz
+set LLVM_RELEASES_URL=https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/
+set LLVM_TGZ=llvm-10.0.0.src.tar.xz
+set CLANG_TGZ=clang-10.0.0.src.tar.xz
 
 :: sources
 del /Q %LLVM_TGZ%

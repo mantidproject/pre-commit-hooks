@@ -10,8 +10,8 @@ function download_and_extract_xz {
 }
 
 # tarballs
-LLVM_SRC_TXZ=https://github.com/llvm/llvm-project/releases/download/llvmorg-11.1.0/llvm-11.1.0.src.tar.xz
-CLANG_SRC_TGZ=https://github.com/llvm/llvm-project/releases/download/llvmorg-11.1.0/clang-11.1.0.src.tar.xz
+LLVM_SRC_TXZ=https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/llvm-10.0.0.src.tar.xz
+CLANG_SRC_TGZ=https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/clang-10.0.0.src.tar.xz
 
 # extract source
 mkdir -p llvm/tools/clang
