@@ -1,32 +1,42 @@
+import argparse
 import re
 import sys
 from pathlib import Path
-from typing import List
+from typing import List, Optional, Sequence, Iterable
 
 # GitPython
 import git
 
 
-def main():
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument('filenames', nargs='*', help='Filenames to check')
+    args = parser.parse_args(argv)
+
     root = get_repo_root()
-    pytest_files = grep_pytest_files(root)
+    pytest_files = grep_pytest_files(args.filenames)
     cmake_files = grep_cmake_files(root)
     has_missing = compare_file_paths(cmake_files=cmake_files, pytest_files=pytest_files)
     if has_missing:
-        sys.exit(1)  # Exit with non-zero for CI
+        return 1  # Exit with non-zero for CI
+    return 0
 
 
 def get_repo_root():
     return git.Repo("", search_parent_directories=True)
 
 
-def grep_pytest_files(repo: git.Repo) -> List[str]:
+def grep_pytest_files(filenames: Iterable[str]) -> List[str]:
     # CMake enforces all pytest files use unittest.main(), so let's use this as our marker
     pytest_file_marker = "unittest.main()"
-    git_command = ["git", "grep", "--files-with-matches", pytest_file_marker]
-    pytest_file_names: str = repo.git.execute(git_command)
-    full_filename_paths = pytest_file_names.split("\n")
-    return _get_file_name(full_filename_paths)
+    pytest_files = []
+    for filename in filenames:
+        with open(filename, 'r') as handle:
+            is_unit_test_file = pytest_file_marker in handle.read()
+        if is_unit_test_file:
+            pytest_files.append(filename)
+
+    return _get_file_name(pytest_files)
 
 
 def _get_file_name(file_paths: List[str]):
@@ -38,9 +48,6 @@ def _get_file_name(file_paths: List[str]):
 
 
 def _parse_py_filenames_from_cmake(repo_root: Path, file_path: str):
-    if "mantidqt" in file_path:
-        foo = 2
-
     cmake_file = repo_root / file_path
     with open(cmake_file.resolve(strict=True), 'r') as handle:
         raw_file_text: str = handle.read()
@@ -62,8 +69,6 @@ def grep_cmake_files(repo: git.Repo) -> List[str]:
 
 
 def compare_file_paths(cmake_files: List[str], pytest_files: List[str]) -> bool:
-    todo_remove = sorted(cmake_files, key=str.casefold)
-
     cmake_set = set(cmake_files)
     pytest_set = set(pytest_files)
     difference = pytest_set - cmake_set
