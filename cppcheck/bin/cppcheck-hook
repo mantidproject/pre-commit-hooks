@@ -1,0 +1,69 @@
+#!/usr/bin/env python
+"""
+pre-commit cppcheck hook
+============================
+
+Runs cppcheck on the given file and exits with a non-zero code if it is a valid cppcheck file
+"""
+# std imports
+import argparse
+import os
+import subprocess
+import sys
+
+USAGE = 'cppcheck-hook <file> [<file> ...]'
+
+DESCRIPTION = '''
+Runs cppcheck on the given file and exits with a non-zero code if any changes were made.
+'''
+
+if sys.platform.startswith('win32'):
+    CPPCHECK_EXE = os.path.join(os.path.dirname(__file__), 'cppcheck.exe')
+elif sys.platform.startswith('linux'):
+    CPPCHECK_EXE = os.path.join(os.path.dirname(__file__), 'cppcheck-linux-64')
+elif sys.platform.startswith('darwin'):
+    CPPCHECK_EXE = os.path.join(os.path.dirname(__file__), 'cppcheck-darwin')
+else:
+    raise RuntimeError('Unknown platform "{}"'.format(sys.platform))
+
+
+class main:
+    def __init__(self):
+        super().__init__()
+        parser = argparse.ArgumentParser(usage=USAGE, description=DESCRIPTION)
+        parser.add_argument('files', nargs='+', help='File to run cppcheck on.')
+        parser.add_argument('suppressions_list', nargs=1, help='File containing paths for ignorable ')
+        parser.add_argument('std', nargs=1, help='The cpp standard to be judged against')
+        self.args = parser.parse_args()
+
+    def main(self):
+        # return non-zero exit code if files will not compliant
+        return 1 if self.cppcheck_all() else 0
+
+    def cppcheck_all(self):
+        invalid = map(self.cppcheck, self.args.files)
+        return any(invalid)
+
+    def cppcheck(self, filepath):
+        return_val = self.run_cppcheck_exe(filepath)
+        pass
+
+    def run_cppcheck_exe(self, filepath):
+        p = subprocess.Popen([CPPCHECK_EXE,
+                              f'--suppressions-list=${self.args.suppressions_list}',
+                              f'--std=${self.args.std}',
+                              '--enable=all',
+                              '--inline-suppr',
+                              '--max-configs=120',
+                              '--quiet',
+                              filepath],
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+        stdout, stderr = p.communicate()
+        if p.returncode != 0:
+            raise RuntimeError(stderr)
+        return stdout
+
+
+if __name__ == '__main__':
+    sys.exit(main().main())

@@ -6,4 +6,4 @@ This is best built using Docker. Change to this directory and run:
 > build-docker-linux.sh
 ```
 
-The new binary will be placed in `llvm-build/bin`.
+The new binary will be placed in the bin folder.
