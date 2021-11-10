@@ -1,6 +1,14 @@
--   id: clang-format
-    name: clang-format
-    description: Format files with ClangFormat.
-    entry: ./clang-format/bin/clang-format-hook
-    language: script
-    files: \.(c|cc|cxx|cpp|h|tcc)$
+- id: clang-format
+  name: clang-format
+  description: Format files with ClangFormat.
+  entry: ./clang-format/bin/clang-format-hook
+  language: script
+  files: \.(c|cc|cxx|cpp|h|tcc)$
+
+- id: cmake-missing-pytest-files
+  name: Check for missing Pytest files
+  description: Checks for Python unit tests which will not be run in automated tests.
+  entry: cmake-missing-pytest-files
+  language: python
+  additional_dependencies: [gitpython]
+  types: [python]
