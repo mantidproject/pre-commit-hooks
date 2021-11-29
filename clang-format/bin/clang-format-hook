@@ -11,4 +11,4 @@ else
 fi
 
 BASEDIR=$(dirname $0)
-$PYTHON_EXE "$BASEDIR/clang-format-hook.py" $1
+$PYTHON_EXE "$BASEDIR/clang-format-hook.py" "$@"
