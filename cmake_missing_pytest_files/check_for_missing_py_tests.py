@@ -31,7 +31,7 @@ def grep_pytest_files(filenames: Iterable[str]) -> List[str]:
     pytest_file_marker = "unittest.main()"
     pytest_files = []
     for filename in filenames:
-        with open(filename, 'r') as handle:
+        with open(filename, 'r', encoding="utf-8") as handle:
             is_unit_test_file = pytest_file_marker in handle.read()
         if is_unit_test_file:
             pytest_files.append(filename)
