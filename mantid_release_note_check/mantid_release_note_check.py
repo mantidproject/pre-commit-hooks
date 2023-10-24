@@ -32,8 +32,9 @@ def check_bullet_points(filenames: set[str]) -> int:
                     lines[i] = lines[i].replace(bullet, '-', 1)
                     retv = 1
 
-        with open(filename, 'w') as rn:
-            rn.writelines(lines)
+        if retv != 0:
+            with open(filename, 'w') as rn:
+                rn.writelines(lines)
 
     return retv
 
