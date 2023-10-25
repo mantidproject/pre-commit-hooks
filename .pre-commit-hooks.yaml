@@ -12,3 +12,10 @@
   language: python
   additional_dependencies: [gitpython]
   types: [python]
+
+- id: mantid-release-note-check
+  name: Release note bullet point style check
+  description: Checks that release note bullet points are the correct style
+  entry: mantid-release-note-check
+  language: python
+  stages: [commit]
