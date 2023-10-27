@@ -1,10 +1,10 @@
 import argparse
 
 from pathlib import Path
-from typing import Sequence
+from typing import Sequence, Set
 
 
-def filter_files(filenames: set[str]) -> set[str]:
+def filter_files(filenames: Set[str]) -> Set[str]:
     files_to_keep = set()
     for filename in filenames:
         path = Path(filename)
@@ -14,7 +14,7 @@ def filter_files(filenames: set[str]) -> set[str]:
     return filenames & files_to_keep
 
 
-def check_bullet_points(filenames: set[str]) -> int:
+def check_bullet_points(filenames: Set[str]) -> int:
     retv = 0
 
     for filename in filenames:
@@ -39,7 +39,7 @@ def check_bullet_points(filenames: set[str]) -> int:
     return retv
 
 
-def main(argv: Sequence[str] | None = None) -> int:
+def main(argv: Sequence[str] = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'filenames', nargs='*',
