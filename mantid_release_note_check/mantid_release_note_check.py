@@ -39,7 +39,7 @@ def check_bullet_points(filenames: Set[str]) -> int:
     return retv
 
 
-def main(argv: Sequence[str] | None = None) -> int:
+def main(argv: Sequence[str] = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'filenames', nargs='*',
