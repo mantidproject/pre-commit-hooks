@@ -7,7 +7,7 @@ To use the hooks copy this to your .pre-commit-config.yaml:
 -   repo: https://github.com/mantidproject/pre-commit-hooks
     rev: main
     hooks:
-    -   id: mantid-release-note-check
+    - id: mantid-release-note-check
         files: docs\/source\/release\/v\d\.\d\.\d\/.*\/.*\.rst
-	- id: cmake-missing-pytest-files
+    - id: cmake-missing-pytest-files
 ```
