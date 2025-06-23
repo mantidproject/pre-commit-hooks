@@ -3,7 +3,7 @@ import unittest
 
 from typing import List
 
-from mantid_release_note_check.mantid_release_note_check import check_bullet_points
+from mantid_hooks.mantid_release_note_check import check_bullet_points
 
 
 class MantidReleaseNoteCheckTest(unittest.TestCase):
@@ -24,32 +24,29 @@ class MantidReleaseNoteCheckTest(unittest.TestCase):
         with open(self.RELEASE_NOTE_PATH, 'r') as rn:
             self.assertEqual([l + '\n' for l in lines], rn.readlines())
 
+    def _run_check(self, input_lines: List[str], expected_output_lines: List[str], expoected_retv: int):
+        self._write_release_note(input_lines)
+        self.assertEqual(check_bullet_points({self.RELEASE_NOTE_PATH}), expoected_retv)
+        self._match_file_content(expected_output_lines)
+
     def test_good_single_release_note(self):
         lines = ["- good note"]
-        self._write_release_note(lines)
-        self.assertEqual(check_bullet_points({self.RELEASE_NOTE_PATH}), 0)
-        self._match_file_content(lines)
+        self._run_check(lines, lines, 0)
 
     def test_bad_single_release_note_star(self):
-        self._write_release_note(["* bad note"])
-        self.assertEqual(check_bullet_points({self.RELEASE_NOTE_PATH}), 1)
-        self._match_file_content(["- bad note"])
+        self._run_check(["* bad note"], ["- bad note"], 1)
 
     def test_bad_single_release_note_plus(self):
-        self._write_release_note(["+ bad note"])
-        self.assertEqual(check_bullet_points({self.RELEASE_NOTE_PATH}), 1)
-        self._match_file_content(["- bad note"])
+        self._run_check(["+ bad note"], ["- bad note"], 1)
 
     def test_mixed_bullet_points(self):
         lines = ["* note one",
                  "- note two",
                  "+ note three"]
-        self._write_release_note(lines)
-        self.assertEqual(check_bullet_points({self.RELEASE_NOTE_PATH}), 1)
         fixed_lines = ["- note one",
                        "- note two",
                        "- note three"]
-        self._match_file_content(fixed_lines)
+        self._run_check(lines, fixed_lines, 1)
 
     def test_nested_bullet_lists(self):
         lines = ["- note 1",
@@ -58,9 +55,7 @@ class MantidReleaseNoteCheckTest(unittest.TestCase):
                  "  - note 1b",
                  "",
                  "- note 2"]
-        self._write_release_note(lines)
-        self.assertEqual(check_bullet_points({self.RELEASE_NOTE_PATH}), 0)
-        self._match_file_content(lines)
+        self._run_check(lines, lines, 0)
 
     def test_different_nested_bullet_lists(self):
         lines = ["- note 1",
@@ -69,6 +64,16 @@ class MantidReleaseNoteCheckTest(unittest.TestCase):
                  "  * note 1b",
                  "",
                  "- note 2"]
-        self._write_release_note(lines)
-        self.assertEqual(check_bullet_points({self.RELEASE_NOTE_PATH}), 0)
-        self._match_file_content(lines)
+        self._run_check(lines, lines, 0)
+
+    def test_adding_bullet_point_to_the_first_line(self):
+        self._run_check(["this is my release note"], ["- this is my release note"], 1)
+
+    def test_adding_bullet_point_to_the_first_line_only(self):
+        lines = ["this is my release note",
+                 "another line",
+                 "and another"]
+        fixed_lines = ["- this is my release note",
+                       "another line",
+                       "and another"]
+        self._run_check(lines, fixed_lines, 1)

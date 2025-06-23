@@ -31,6 +31,11 @@ def check_bullet_points(filenames: Set[str]) -> int:
                     print(f"Fixing {filename}")
                     lines[i] = lines[i].replace(bullet, '-', 1)
                     retv = 1
+                elif i == 0 and bullet != '-':
+                    print(f"The first line of {filename} does not start with a bullet point (-).")
+                    print(f"Fixing {filename}")
+                    lines[i] = '- ' + lines[i]
+                    retv = 1
 
         if retv != 0:
             with open(filename, 'w') as rn:
